@@ -52,7 +52,7 @@ export default function ProductGrid() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products?.map((product: any, index: number) => {
+          {Array.isArray(products) && products.map((product: any, index: number) => {
             const IconComponent = sawTypeIcons[product.sawType as keyof typeof sawTypeIcons];
             const volumePerPiece = (product.thickness * product.width * parseFloat(product.length)) / 1000000;
             const areaPerPiece = (product.width * parseFloat(product.length)) / 1000;
@@ -82,7 +82,7 @@ export default function ProductGrid() {
                     
                     <div className="wood-texture rounded-lg p-4 mb-4">
                       <div className="text-white text-center">
-                        <IconComponent className="h-8 w-8 mx-auto mb-2" />
+                        {IconComponent && <IconComponent className="h-8 w-8 mx-auto mb-2" />}
                         <p className="text-sm">{sawTypeNames[product.sawType as keyof typeof sawTypeNames]}</p>
                       </div>
                     </div>

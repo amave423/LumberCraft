@@ -7,6 +7,7 @@ import Calculator from "@/components/calculator";
 import ProductGrid from "@/components/product-grid";
 import Reviews from "@/components/reviews";
 import ParallaxSection from "@/components/parallax-section";
+import LocationMap from "@/components/location-map";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calculator as CalcIcon, Phone, Slice, Settings, Ruler, Flame } from "lucide-react";
@@ -276,6 +277,13 @@ export default function Landing() {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
+
+      {/* Location Section */}
+      <section className="py-20 bg-warm-gray">
+        <div className="container mx-auto px-4">
+          <LocationMap />
         </div>
       </section>
 
