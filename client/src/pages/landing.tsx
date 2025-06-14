@@ -55,7 +55,16 @@ export default function Landing() {
               Ленточное и дисковое пиление, строганные и сушеные доски.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-amber hover:bg-amber/90 text-forest-dark font-semibold">
+              <Button 
+                size="lg" 
+                className="bg-amber hover:bg-amber/90 text-forest-dark font-semibold"
+                onClick={() => {
+                  const calculatorSection = document.getElementById('calculator');
+                  if (calculatorSection) {
+                    calculatorSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
                 <CalcIcon className="mr-2 h-5 w-5" />
                 Рассчитать стоимость
               </Button>
@@ -76,6 +85,21 @@ export default function Landing() {
           <div className="text-2xl text-white">↓</div>
         </div>
       </ParallaxSection>
+
+      {/* Calculator Section */}
+      <section id="calculator" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-forest-dark mb-6">
+              Калькулятор пиломатериалов
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Рассчитайте точную стоимость и количество материалов
+            </p>
+          </div>
+          <Calculator />
+        </div>
+      </section>
 
       {/* Product Categories */}
       <section className="py-20 bg-warm-gray">
