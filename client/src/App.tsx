@@ -30,7 +30,7 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Home} />
-          {user?.isAdmin && <Route path="/admin" component={Admin} />}
+          {(user as any)?.isAdmin && <Route path="/admin" component={Admin} />}
         </>
       )}
       <Route component={NotFound} />
