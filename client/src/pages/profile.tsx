@@ -151,7 +151,7 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {orders.map((order: Order) => (
+                  {(orders as Order[]).map((order: Order) => (
                     <Card key={order.id} className="border border-gray-200">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
