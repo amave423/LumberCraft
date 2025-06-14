@@ -170,7 +170,7 @@ export default function Calculator() {
               </TabsTrigger>
               <TabsTrigger value="gost" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
-                Стандартные размеры ГОСТ
+                Стандартные размеры
               </TabsTrigger>
             </TabsList>
 
@@ -188,19 +188,16 @@ export default function Calculator() {
                           <SelectValue placeholder="Выберите размер по ГОСТ" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="" disabled>Доски обрезные</SelectItem>
                           {gostSizes.filter(s => s.category === "standard").map(size => (
                             <SelectItem key={size.name} value={size.name}>
                               {size.name}
                             </SelectItem>
                           ))}
-                          <SelectItem value="" disabled>Брус</SelectItem>
                           {gostSizes.filter(s => s.category === "timber").map(size => (
                             <SelectItem key={size.name} value={size.name}>
                               {size.name}
                             </SelectItem>
                           ))}
-                          <SelectItem value="" disabled>Рейки и планки</SelectItem>
                           {gostSizes.filter(s => s.category === "slats").map(size => (
                             <SelectItem key={size.name} value={size.name}>
                               {size.name}
