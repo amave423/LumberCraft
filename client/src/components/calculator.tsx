@@ -57,8 +57,9 @@ const gostSizes: GostSize[] = [
 ];
 
 export default function Calculator() {
-  const [calculationType, setCalculationType] = useState<"custom" | "gost">("custom");
+  const [calculationType, setCalculationType] = useState<"custom" | "gost" | "firewood">("custom");
   const [sawType, setSawType] = useState<string>("band");
+  const [woodType, setWoodType] = useState<string>("pine");
   const [grade, setGrade] = useState<string>("2");
   const [thickness, setThickness] = useState<number>(50);
   const [width, setWidth] = useState<number>(150);
@@ -72,6 +73,22 @@ export default function Calculator() {
     disc: 7800,    // ₽ за м³
     planed: 850,   // ₽ за м² (строганые)
     dried: 9200,   // ₽ за м³
+  };
+
+  const woodMultipliers = {
+    pine: 1.0,      // сосна - базовая цена
+    spruce: 1.0,    // ель - базовая цена
+    larch: 1.4,     // лиственница - +40%
+    birch: 1.2,     // береза - +20%
+    aspen: 0.9,     // осина - -10%
+  };
+
+  const firewoodPrices = {
+    pine: 2800,     // ₽ за м³
+    spruce: 2800,   // ₽ за м³
+    birch: 3500,    // ₽ за м³
+    aspen: 2500,    // ₽ за м³
+    larch: 3800,    // ₽ за м³
   };
 
   const gradeMultipliers = {
@@ -91,6 +108,27 @@ export default function Calculator() {
   };
 
   const calculate = () => {
+    if (calculationType === "firewood") {
+      // Расчет для дров
+      if (quantity <= 0 || !woodType) return;
+      
+      const pricePerCubic = firewoodPrices[woodType as keyof typeof firewoodPrices];
+      const totalPrice = quantity * pricePerCubic;
+      
+      setResult({
+        dimensions: `Дрова ${getWoodTypeName(woodType)}`,
+        quantity,
+        grade: "Колотые",
+        totalVolume: quantity,
+        totalPrice,
+        pricePerUnit: pricePerCubic,
+        unitType: "м³",
+        sawType: "firewood"
+      });
+      return;
+    }
+
+    // Расчет для пиломатериалов
     if (!sawType || thickness <= 0 || width <= 0 || length <= 0 || quantity <= 0) {
       return;
     }
@@ -120,9 +158,10 @@ export default function Calculator() {
       unitType = "м³";
     }
 
-    // Применяем коэффициент сорта
+    // Применяем коэффициенты породы и сорта
+    const woodMultiplier = woodMultipliers[woodType as keyof typeof woodMultipliers];
     const gradeMultiplier = gradeMultipliers[grade as keyof typeof gradeMultipliers];
-    const pricePerUnit = basePricePerUnit * gradeMultiplier;
+    const pricePerUnit = basePricePerUnit * woodMultiplier * gradeMultiplier;
     
     if (sawType === "planed") {
       totalPrice = totalArea! * pricePerUnit;

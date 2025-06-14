@@ -39,16 +39,20 @@ export const users = pgTable("users", {
 });
 
 export const sawTypeEnum = pgEnum("saw_type", ["band", "disc", "planed", "dried"]);
+export const woodTypeEnum = pgEnum("wood_type", ["pine", "larch", "aspen", "spruce", "birch"]);
+export const productTypeEnum = pgEnum("product_type", ["lumber", "firewood"]);
 export const orderStatusEnum = pgEnum("order_status", ["pending", "accepted", "rejected", "completed"]);
 
 // Products table
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
-  sawType: sawTypeEnum("saw_type").notNull(),
-  thickness: integer("thickness").notNull(), // mm
-  width: integer("width").notNull(), // mm
-  length: decimal("length", { precision: 3, scale: 1 }).notNull(), // meters
+  productType: productTypeEnum("product_type").notNull(),
+  woodType: woodTypeEnum("wood_type").notNull(),
+  sawType: sawTypeEnum("saw_type"),
+  thickness: integer("thickness"), // mm
+  width: integer("width"), // mm
+  length: decimal("length", { precision: 3, scale: 1 }), // meters
   pricePerCubic: decimal("price_per_cubic", { precision: 10, scale: 2 }), // rubles per m³
   pricePerSquare: decimal("price_per_square", { precision: 10, scale: 2 }), // rubles per m² (for planed)
   inStock: boolean("in_stock").default(true),
