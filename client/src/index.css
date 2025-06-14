@@ -120,6 +120,27 @@
     }
   }
 
+  /* Исправление параллакса и z-index */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  section {
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+  }
+
+  /* Предотвращение наложения параллакс секций */
+  section[style*="background"] {
+    z-index: 0;
+  }
+
+  /* Исправление позиционирования контента */
+  .relative.z-10 {
+    z-index: 10;
+  }
+
   .forest-dark {
     color: hsl(110, 40%, 18%);
   }
