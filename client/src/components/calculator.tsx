@@ -56,6 +56,17 @@ const gostSizes: GostSize[] = [
   { name: "Планка 40×60×3000", thickness: 40, width: 60, length: 3.0, category: "slats" },
 ];
 
+const getWoodTypeName = (woodType: string) => {
+  const names = {
+    pine: "сосновые",
+    spruce: "еловые", 
+    larch: "лиственничные",
+    birch: "березовые",
+    aspen: "осиновые"
+  };
+  return names[woodType as keyof typeof names] || woodType;
+};
+
 export default function Calculator() {
   const [calculationType, setCalculationType] = useState<"custom" | "gost" | "firewood">("custom");
   const [sawType, setSawType] = useState<string>("band");
@@ -201,8 +212,8 @@ export default function Calculator() {
           <p className="text-gray-600 mt-2">Расчет по ГОСТ или индивидуальным размерам</p>
         </CardHeader>
         <CardContent className="p-8">
-          <Tabs value={calculationType} onValueChange={(v) => setCalculationType(v as "custom" | "gost")} className="mb-8">
-            <TabsList className="grid w-full grid-cols-2">
+          <Tabs value={calculationType} onValueChange={(v) => setCalculationType(v as "custom" | "gost" | "firewood")} className="mb-8">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="custom" className="flex items-center gap-2">
                 <Ruler className="h-4 w-4" />
                 Свой размер
@@ -210,6 +221,9 @@ export default function Calculator() {
               <TabsTrigger value="gost" className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 Стандартные размеры
+              </TabsTrigger>
+              <TabsTrigger value="firewood" className="flex items-center gap-2">
+                🔥 Дрова
               </TabsTrigger>
             </TabsList>
 
@@ -291,51 +305,112 @@ export default function Calculator() {
                   </div>
                 </TabsContent>
 
-                <div>
-                  <Label className="text-forest-dark font-medium">
-                    Тип пиления
-                  </Label>
-                  <Select value={sawType} onValueChange={setSawType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Выберите тип пиления" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="band">Ленточное пиление</SelectItem>
-                      <SelectItem value="disc">Дисковое пиление</SelectItem>
-                      <SelectItem value="planed">Строганые доски</SelectItem>
-                      <SelectItem value="dried">Доска после сушилки</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <TabsContent value="firewood" className="mt-0">
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-forest-dark font-medium">
+                        Порода древесины
+                      </Label>
+                      <Select value={woodType} onValueChange={setWoodType}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Выберите породу" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pine">Сосна (2800 ₽/м³)</SelectItem>
+                          <SelectItem value="spruce">Ель (2800 ₽/м³)</SelectItem>
+                          <SelectItem value="birch">Береза (3500 ₽/м³)</SelectItem>
+                          <SelectItem value="aspen">Осина (2500 ₽/м³)</SelectItem>
+                          <SelectItem value="larch">Лиственница (3800 ₽/м³)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-forest-dark font-medium">
+                        Объем (м³)
+                      </Label>
+                      <Input
+                        type="number"
+                        value={quantity}
+                        onChange={(e) => setQuantity(Number(e.target.value))}
+                        min="1"
+                        step="0.5"
+                        className="border-gray-300"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
 
-                <div>
-                  <Label className="text-forest-dark font-medium">
-                    Сорт древесины
-                  </Label>
-                  <Select value={grade} onValueChange={setGrade}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1-й сорт (+20% к цене)</SelectItem>
-                      <SelectItem value="2">2-й сорт (стандартная цена)</SelectItem>
-                      <SelectItem value="3">3-й сорт (-20% к цене)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {calculationType !== "firewood" && (
+                  <>
+                    <div>
+                      <Label className="text-forest-dark font-medium">
+                        Порода древесины
+                      </Label>
+                      <Select value={woodType} onValueChange={setWoodType}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Выберите породу" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pine">Сосна (базовая цена)</SelectItem>
+                          <SelectItem value="spruce">Ель (базовая цена)</SelectItem>
+                          <SelectItem value="larch">Лиственница (+40%)</SelectItem>
+                          <SelectItem value="birch">Береза (+20%)</SelectItem>
+                          <SelectItem value="aspen">Осина (-10%)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div>
-                  <Label className="text-forest-dark font-medium">
-                    Количество (шт)
-                  </Label>
-                  <Input
-                    type="number"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
-                    min="1"
-                    className="border-gray-300"
-                  />
-                </div>
+                    <div>
+                      <Label className="text-forest-dark font-medium">
+                        Тип пиления
+                      </Label>
+                      <Select value={sawType} onValueChange={setSawType}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Выберите тип пиления" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="band">Ленточное пиление</SelectItem>
+                          <SelectItem value="disc">Дисковое пиление</SelectItem>
+                          <SelectItem value="planed">Строганые доски</SelectItem>
+                          <SelectItem value="dried">Доска после сушилки</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </>
+                )}
+
+                {calculationType !== "firewood" && (
+                  <>
+                    <div>
+                      <Label className="text-forest-dark font-medium">
+                        Сорт древесины
+                      </Label>
+                      <Select value={grade} onValueChange={setGrade}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">1-й сорт (+20% к цене)</SelectItem>
+                          <SelectItem value="2">2-й сорт (стандартная цена)</SelectItem>
+                          <SelectItem value="3">3-й сорт (-20% к цене)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label className="text-forest-dark font-medium">
+                        Количество (шт)
+                      </Label>
+                      <Input
+                        type="number"
+                        value={quantity}
+                        onChange={(e) => setQuantity(Number(e.target.value))}
+                        min="1"
+                        className="border-gray-300"
+                      />
+                    </div>
+                  </>
+                )}
 
                 <Button 
                   onClick={calculate} 
